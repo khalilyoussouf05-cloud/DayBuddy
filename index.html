@@ -3,60 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forest Productivity App</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: url('https://example.com/nature-background.jpg'); background-size: cover; color: white; }
-        .container { max-width: 600px; margin: auto; padding: 20px; }
-        .timer { font-size: 48px; text-align: center; }
-        button { padding: 10px 20px; font-size: 16px; } 
-        /* Additional styles */
-    </style>
+    <title>Forest-style Productivity App</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>Forest Productivity App</h1>
-        <div class="timer" id="timer">00:00:00</div>
-        <button id="startTimer">Start</button>
-        <button id="stopTimer">Stop</button>
-        <button id="resetTimer">Reset</button>
-        <h2>Achievements</h2>
-        <div id="achievements"></div>
-    </div>
-    <script>
-        let timerInterval;
-        let elapsedTime = 0;
-        const achievements = [];
+    </header>
+    <main>
+        <section id="timer">
+            <h2>Timer</h2>
+            <div id="timer-display">25:00</div>
+            <button id="start-timer">Start</button>
+            <button id="stop-timer">Stop</button>
+            <button id="reset-timer">Reset</button>
+            <label for="timer-type">Choose Timer Type:</label>
+            <select id="timer-type">
+                <option value="pomodoro">Pomodoro</option>
+                <option value="deep-work">Deep Work</option>
+                <option value="custom">Custom</option>
+            </select>
+        </section>
 
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                elapsedTime++;
-                document.getElementById('timer').innerText = formatTime(elapsedTime);
-                // Implement coin system and achievements here
-            }, 1000);
-        }
+        <section id="trees">
+            <h2>Unlockable Tree Species</h2>
+            <div id="tree-list">
+                <!-- Tree species would be dynamically added here -->
+            </div>
+        </section>
 
-        function stopTimer() {
-            clearInterval(timerInterval);
-        }
+        <section id="rewards">
+            <h2>Coin Reward System</h2>
+            <p id="coins">Coins: 0</p>
+        </section>
 
-        function resetTimer() {
-            clearInterval(timerInterval);
-            elapsedTime = 0;
-            document.getElementById('timer').innerText = formatTime(elapsedTime);
-        }
+        <section id="achievements">
+            <h2>Achievements</h2>
+            <div id="achievement-list">
+                <!-- Achievements will be displayed here -->
+            </div>
+        </section>
 
-        function formatTime(seconds) {
-            const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
-            const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-            const sec = String(seconds % 60).padStart(2, '0');
-            return `${hours}:${minutes}:${sec}`;
-        }
+        <section id="music">
+            <h2>Focus Music Player</h2>
+            <audio controls>
+                <source src="music.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </section>
 
-        document.getElementById('startTimer').addEventListener('click', startTimer);
-        document.getElementById('stopTimer').addEventListener('click', stopTimer);
-        document.getElementById('resetTimer').addEventListener('click', resetTimer);
+        <section id="statistics">
+            <h2>Statistics</h2>
+            <p id="weekly-stats">Weekly Stats: --</p>
+            <p id="monthly-stats">Monthly Stats: --</p>
+        </section>
 
-        // Local storage functionality for saving achievements and timer state
-    </script>
+        <section id="notifications">
+            <h2>Smart Notifications</h2>
+            <p id="notification-message">Notifications will appear here.</p>
+        </section>
+
+        <section id="break-mechanics">
+            <h2>Break Mechanics</h2>
+            <p>Breaks will be handled automatically based on your timer settings.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 Forest Productivity App</p>
+    </footer>
 </body>
 </html>
