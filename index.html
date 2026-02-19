@@ -3,58 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forest Focus App</title>
+    <title>Forest-Style Productivity App</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f8ff; color: #333; }
-        #forest { width: 100%; height: 400px; background-image: url('forest.png'); background-size: cover; position: relative; }
-        .tree { position: absolute; bottom: 0; }
-        .stats, .controls { margin: 20px; }
+        body { font-family: Arial, sans-serif; background-color: #f0f0f0; color: #333; }
+        #app { max-width: 800px; margin: auto; padding: 20px; }
+        .tree { width: 100px; height: 150px; fill: green; }
+        .statistics { margin-top: 20px; }
+        .badge { display: inline-block; margin: 10px; }
     </style>
 </head>
 <body>
-    <h1>Forest Focus App</h1>
-    <div id="forest"></div>
-    <div class="controls">
-        <button onclick="startFocusSession()">Start Focus Session</button>
-        <button onclick="endFocusSession()">End Session</button>
-    </div>
-    <div class="stats">
-        <h2>Statistics</h2>
-        <p>Focus Time: <span id="focus-time">0</span> minutes</p>
-        <p>Coins: <span id="coins">0</span></p>
+    <div id="app">
+        <h1>Forest-Style Productivity App</h1>
+        <svg width="200" height="200">
+            <circle class="tree" cx="100" cy="150" r="40" />
+        </svg>
+        <div>
+            <label for="timer">Custom Timer:</label>
+            <input type="text" id="timer" placeholder="Enter time in minutes">
+        </div>
+        <div class="statistics">
+            <h2>Weekly Stats</h2>
+            <div id="stats-chart">[Chart goes here]</div>
+        </div>
+        <div>
+            <button id="focusMusic">Play Focus Music</button>
+        </div>
+        <div class="badges">
+            <h2>Achievement Badges</h2>
+            <div class="badge">🌳 10 Trees Planted</div>
+            <div class="badge">🏆 Focus Master</div>
+        </div>
+        <div class="notifications">
+            <h2>Notifications</h2>
+            <ul id="notificationList"></ul>
+        </div>
+        <div class="coin-system">
+            <h2>Coins: <span id="coinCount">0</span></h2>
+        </div>
     </div>
     <script>
-        let focusTime = 0;
-        let coins = 0;
-        let focusInterval;
-
-        function startFocusSession() {
-            focusTime = 0;
-            coins += 10; // Earn coins for starting a session
-            updateStats();
-            focusInterval = setInterval(() => {
-                focusTime++;
-                updateStats();
-                if (focusTime % 5 === 0) growTree();
-            }, 60000); // Increment focus time every minute
-        }
-
-        function endFocusSession() {
-            clearInterval(focusInterval);
-        }
-
-        function growTree() {
-            const tree = document.createElement('img');
-            tree.src = 'tree.png';
-            tree.className = 'tree';
-            tree.style.left = `${Math.random() * 100}%`;
-            document.getElementById('forest').appendChild(tree);
-        }
-
-        function updateStats() {
-            document.getElementById('focus-time').textContent = focusTime;
-            document.getElementById('coins').textContent = coins;
-        }
+        // JavaScript for interactive features could go here
     </script>
 </body>
 </html>
