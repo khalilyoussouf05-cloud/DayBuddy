@@ -1,0 +1,59 @@
+.forest {
+  background: linear-gradient(to bottom right, #6db3f2, #1e69d2);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Arial', sans-serif;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tree-card {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  margin: 15px;
+  padding: 20px;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s;
+}
+
+.tree-card:hover {
+  transform: scale(1.05);
+}
+
+.achievements {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.achievement {
+  background: #4caf50;
+  color: white;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px 20px;
+  transition: background 0.3s;
+}
+
+.achievement:hover {
+  background: #45a049;
+}
+
+@media (max-width: 768px) {
+  .forest {
+    padding: 10px;
+  }
+  .tree-card {
+    width: 100%;
+  }
+}
