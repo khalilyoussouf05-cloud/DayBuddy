@@ -3,48 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forest-Style Productivity App</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Forest Productivity App</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: url('https://example.com/nature-background.jpg'); background-size: cover; color: white; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
+        .timer { font-size: 48px; text-align: center; }
+        button { padding: 10px 20px; font-size: 16px; } 
+        /* Additional styles */
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Forest-Style Productivity App</h1>
-    </header>
-    <main>
-        <div id="timer-container">
-            <h2>Customizable Timer</h2>
-            <!-- Timer UI goes here -->
-            <p>Choose your timer style: Pomodoro / Deep Work</p>
-            <button id="start-timer">Start Timer</button>
-        </div>
-        <div id="tree-unlock">
-            <h2>Unlock Tree Species</h2>
-            <p>Collect coins to unlock different species.</p>
-        </div>
-        <div id="stats">
-            <h2>Weekly/Monthly Stats</h2>
-            <canvas id="stats-chart"></canvas>
-        </div>
-        <div id="music-player">
-            <h2>Focus Music Player</h2>
-            <audio controls>
-                <source src="music.mp3" type="audio/mpeg">
-                Your browser does not support the audio tag.
-            </audio>
-        </div>
-        <div id="achievements">
-            <h2>Achievements</h2>
-            <p>Track your badges and milestones!</p>
-        </div>
-        <div id="reminders">
-            <h2>Focus Reminders</h2>
-            <p>Set reminders for your focus sessions.</p>
-        </div>
-        <div id="break-mechanics">
-            <h2>Break Mechanics</h2>
-            <p>Manage your work-break ratio.</p>
-        </div>
-    </main>
-    <script src="script.js"></script>
+    <div class="container">
+        <h1>Forest Productivity App</h1>
+        <div class="timer" id="timer">00:00:00</div>
+        <button id="startTimer">Start</button>
+        <button id="stopTimer">Stop</button>
+        <button id="resetTimer">Reset</button>
+        <h2>Achievements</h2>
+        <div id="achievements"></div>
+    </div>
+    <script>
+        let timerInterval;
+        let elapsedTime = 0;
+        const achievements = [];
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                elapsedTime++;
+                document.getElementById('timer').innerText = formatTime(elapsedTime);
+                // Implement coin system and achievements here
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            elapsedTime = 0;
+            document.getElementById('timer').innerText = formatTime(elapsedTime);
+        }
+
+        function formatTime(seconds) {
+            const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+            const sec = String(seconds % 60).padStart(2, '0');
+            return `${hours}:${minutes}:${sec}`;
+        }
+
+        document.getElementById('startTimer').addEventListener('click', startTimer);
+        document.getElementById('stopTimer').addEventListener('click', stopTimer);
+        document.getElementById('resetTimer').addEventListener('click', resetTimer);
+
+        // Local storage functionality for saving achievements and timer state
+    </script>
 </body>
 </html>
