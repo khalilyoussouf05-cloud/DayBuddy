@@ -1,229 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DayBuddy</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Focus App</title>
     <style>
-      :root {
-        --bg: #fff8f0;
-        --card: #ffffff;
-        --ink: #3f2f2f;
-        --muted: #8f7575;
-        --accent: #ff9f9f;
-        --accent-strong: #ff7f7f;
-        --accent-soft: #ffd7a8;
-        --shadow: 0 12px 28px rgba(129, 88, 88, 0.18);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        background: radial-gradient(circle at top, #fffef8 0%, var(--bg) 70%);
-        font-family: "Trebuchet MS", "Comic Sans MS", "Segoe UI", system-ui, sans-serif;
-        color: var(--ink);
-        padding: 1rem;
-      }
-
-      .app {
-        width: min(100%, 28rem);
-        background: var(--card);
-        border-radius: 1.5rem;
-        padding: 1.25rem;
-        box-shadow: var(--shadow);
-        text-align: center;
-        border: 3px solid #ffe7d6;
-      }
-
-      h1 {
-        margin: 0.25rem 0 0.75rem;
-        font-size: clamp(1.5rem, 3vw, 2rem);
-      }
-
-      .mascot {
-        font-size: 4rem;
-        margin: 0.25rem 0 0.5rem;
-        transition: transform 200ms ease;
-      }
-
-      .streak-label {
-        margin: 0;
-        color: var(--muted);
-        font-size: 0.95rem;
-      }
-
-      .streak-number {
-        margin: 0.2rem 0 1.2rem;
-        font-size: clamp(2.5rem, 10vw, 3.5rem);
-        font-weight: 800;
-        line-height: 1;
-        color: #f46f6f;
-      }
-
-      .streak-number.bounce {
-        animation: bounce 450ms ease;
-      }
-
-      @keyframes bounce {
-        0% {
-          transform: scale(1);
-        }
-        35% {
-          transform: scale(1.3);
-        }
-        65% {
-          transform: scale(0.9);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
-
-      .big-button {
-        width: 100%;
-        border: none;
-        border-radius: 999px;
-        padding: 1rem 1.25rem;
-        font-size: 1.2rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-        color: #4a3434;
-        box-shadow: 0 8px 16px rgba(232, 150, 150, 0.35);
-        cursor: pointer;
-        transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
-      }
-
-      .big-button:active {
-        transform: translateY(2px) scale(0.99);
-      }
-
-      .big-button:hover {
-        filter: brightness(1.02);
-        box-shadow: 0 10px 20px rgba(232, 150, 150, 0.45);
-      }
-
-      .hint {
-        margin: 0.9rem 0 0;
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
-
-      @media (min-width: 640px) {
-        .app {
-          padding: 1.75rem;
-        }
-      }
+        body { font-family: Arial, sans-serif; background-color: #f0f8ff; color: #333; }
+        #forest { width: 100%; height: 400px; background-image: url('forest.png'); background-size: cover; position: relative; }
+        .tree { position: absolute; bottom: 0; }
+        .stats, .controls { margin: 20px; }
     </style>
-  </head>
-  <body>
-    <main class="app">
-      <h1>🌼 DayBuddy</h1>
-      <div class="mascot" id="mascot" aria-hidden="true">🐣</div>
-
-      <p class="streak-label">Current streak</p>
-      <p class="streak-number" id="streakNumber">0</p>
-
-      <button class="big-button" id="didItButton" type="button">I did it today!</button>
-      <p class="hint" id="statusText">Tap once per day to grow your streak.</p>
-    </main>
-
+</head>
+<body>
+    <h1>Forest Focus App</h1>
+    <div id="forest"></div>
+    <div class="controls">
+        <button onclick="startFocusSession()">Start Focus Session</button>
+        <button onclick="endFocusSession()">End Session</button>
+    </div>
+    <div class="stats">
+        <h2>Statistics</h2>
+        <p>Focus Time: <span id="focus-time">0</span> minutes</p>
+        <p>Coins: <span id="coins">0</span></p>
+    </div>
     <script>
-      const STORAGE_KEY = "daybuddyStreak";
+        let focusTime = 0;
+        let coins = 0;
+        let focusInterval;
 
-      const mascot = document.getElementById("mascot");
-      const streakNumber = document.getElementById("streakNumber");
-      const didItButton = document.getElementById("didItButton");
-      const statusText = document.getElementById("statusText");
-
-      const mascots = ["🐣", "🐥", "🐰", "🧸", "🐼", "🦊", "🐱", "🐻"];
-
-      function loadStreak() {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-        return {
-          streak: Number(saved.streak) || 0,
-          lastDate: saved.lastDate || null,
-        };
-      }
-
-      function saveStreak(data) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      }
-
-      function dateString(date = new Date()) {
-        return date.toISOString().split("T")[0];
-      }
-
-      function previousDateString(date = new Date()) {
-        const previous = new Date(date);
-        previous.setDate(previous.getDate() - 1);
-        return dateString(previous);
-      }
-
-      function mascotForStreak(streak) {
-        return mascots[Math.min(streak, mascots.length - 1)];
-      }
-
-      function updateUI(streak, message = "") {
-        streakNumber.textContent = streak;
-        mascot.textContent = mascotForStreak(streak);
-        mascot.style.transform = "scale(1.08) rotate(-4deg)";
-        setTimeout(() => {
-          mascot.style.transform = "scale(1) rotate(0deg)";
-        }, 180);
-
-        streakNumber.classList.remove("bounce");
-        void streakNumber.offsetWidth;
-        streakNumber.classList.add("bounce");
-
-        if (message) statusText.textContent = message;
-      }
-
-      function initialize() {
-        const { streak, lastDate } = loadStreak();
-        const today = dateString();
-
-        if (lastDate && lastDate !== today && lastDate !== previousDateString()) {
-          saveStreak({ streak: 0, lastDate: null });
-          updateUI(0, "New day, fresh start 🌤️");
-          return;
+        function startFocusSession() {
+            focusTime = 0;
+            coins += 10; // Earn coins for starting a session
+            updateStats();
+            focusInterval = setInterval(() => {
+                focusTime++;
+                updateStats();
+                if (focusTime % 5 === 0) growTree();
+            }, 60000); // Increment focus time every minute
         }
 
-        updateUI(streak, "Tap once per day to grow your streak.");
-      }
-
-      didItButton.addEventListener("click", () => {
-        const state = loadStreak();
-        const today = dateString();
-        const yesterday = previousDateString();
-
-        if (state.lastDate === today) {
-          statusText.textContent = "Already counted today — great job! ✨";
-          mascot.textContent = "😌";
-          return;
+        function endFocusSession() {
+            clearInterval(focusInterval);
         }
 
-        let nextStreak = 1;
-
-        if (state.lastDate === yesterday) {
-          nextStreak = state.streak + 1;
+        function growTree() {
+            const tree = document.createElement('img');
+            tree.src = 'tree.png';
+            tree.className = 'tree';
+            tree.style.left = `${Math.random() * 100}%`;
+            document.getElementById('forest').appendChild(tree);
         }
 
-        const nextState = {
-          streak: nextStreak,
-          lastDate: today,
-        };
-
-        saveStreak(nextState);
-        updateUI(nextStreak, "Nice! See you tomorrow to keep it going 💪");
-      });
-
-      initialize();
+        function updateStats() {
+            document.getElementById('focus-time').textContent = focusTime;
+            document.getElementById('coins').textContent = coins;
+        }
     </script>
-  </body>
+</body>
 </html>
