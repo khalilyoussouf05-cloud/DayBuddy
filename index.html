@@ -4,73 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forest-style Productivity App</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+        }
+        #musicPlayer {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Forest Productivity App</h1>
-    </header>
-    <main>
-        <section id="timer">
+    <div class="container">
+        <h1>Forest-style Productivity App</h1>
+        <div>
             <h2>Timer</h2>
-            <div id="timer-display">25:00</div>
-            <button id="start-timer">Start</button>
-            <button id="stop-timer">Stop</button>
-            <button id="reset-timer">Reset</button>
-            <label for="timer-type">Choose Timer Type:</label>
-            <select id="timer-type">
-                <option value="pomodoro">Pomodoro</option>
-                <option value="deep-work">Deep Work</option>
-                <option value="custom">Custom</option>
-            </select>
-        </section>
-
-        <section id="trees">
-            <h2>Unlockable Tree Species</h2>
-            <div id="tree-list">
-                <!-- Tree species would be dynamically added here -->
-            </div>
-        </section>
-
-        <section id="rewards">
-            <h2>Coin Reward System</h2>
-            <p id="coins">Coins: 0</p>
-        </section>
-
-        <section id="achievements">
+            <input type="number" id="timerInput" placeholder="Minutes" />
+            <button id="startTimer">Start Timer</button>
+            <div id="timerDisplay">Time Remaining: <span id="timeLeft">0</span> minutes</div>
+        </div>
+        <div>
+            <h2>Unlock Trees</h2>
+            <button id="unlockTree">Unlock Tree</button>
+            <p id="unlockMessage"></p>
+        </div>
+        <div>
+            <h2>Coins: <span id="coins">0</span></h2>
+            <button id="getCoins">Earn Coins</button>
+        </div>
+        <div>
             <h2>Achievements</h2>
-            <div id="achievement-list">
-                <!-- Achievements will be displayed here -->
-            </div>
-        </section>
-
-        <section id="music">
-            <h2>Focus Music Player</h2>
+            <p id="achievements">No achievements yet!</p>
+        </div>
+        <div id="musicPlayer">
+            <h2>Music Player</h2>
             <audio controls>
                 <source src="music.mp3" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
-        </section>
+        </div>
+        <div id="notifications"></div>
+    </div>
+    <script>
+        let coins = 0;
+        let timer;
+        let timeLeft;
 
-        <section id="statistics">
-            <h2>Statistics</h2>
-            <p id="weekly-stats">Weekly Stats: --</p>
-            <p id="monthly-stats">Monthly Stats: --</p>
-        </section>
+        document.getElementById('startTimer').onclick = function() {
+            const minutes = document.getElementById('timerInput').value;
+            timeLeft = minutes;
+            document.getElementById('timeLeft').innerText = timeLeft;
+            timer = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert('Time is up!');
+                    // Notify user
+                    document.getElementById('notifications').innerHTML += '<p>Time is up!</p>';
+                } else {
+                    timeLeft--;
+                    document.getElementById('timeLeft').innerText = timeLeft;
+                }
+            }, 60000);
+        };
 
-        <section id="notifications">
-            <h2>Smart Notifications</h2>
-            <p id="notification-message">Notifications will appear here.</p>
-        </section>
+        document.getElementById('unlockTree').onclick = function() {
+            document.getElementById('unlockMessage').innerText = 'Tree unlocked! 🌳';
+            coins += 10;
+            document.getElementById('coins').innerText = coins;
+            updateAchievements('Unlocked a Tree');
+        };
 
-        <section id="break-mechanics">
-            <h2>Break Mechanics</h2>
-            <p>Breaks will be handled automatically based on your timer settings.</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 Forest Productivity App</p>
-    </footer>
+        document.getElementById('getCoins').onclick = function() {
+            coins += 5;
+            document.getElementById('coins').innerText = coins;
+            updateAchievements('Earned Coins');
+        };
+
+        function updateAchievements(achievement) {
+            const achievementsElement = document.getElementById('achievements');
+            achievementsElement.innerText = achievementsElement.innerText + '\n' + achievement;
+        }
+    </script>
 </body>
 </html>
